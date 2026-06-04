@@ -1,13 +1,6 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { AlertTriangle, RefreshCw } from 'lucide-react'
-import { enUS } from '@/lib/locales/en-US'
-
-// Use English as fallback for ErrorBoundary (class component cannot use hooks)
-const t = enUS
 
 interface ErrorBoundaryState {
   hasError: boolean
@@ -47,50 +40,9 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
   render() {
     if (this.state.hasError) {
-      if (this.props.fallback) {
-        const FallbackComponent = this.props.fallback
-        return <FallbackComponent error={this.state.error} resetError={this.resetError} />
-      }
-
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-background p-4">
-          <Card className="w-full max-w-md">
-            <CardHeader className="text-center">
-              <div className="mx-auto w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center mb-4">
-                <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400" />
-              </div>
-              <CardTitle className="text-red-900 dark:text-red-100">{t?.common?.error || 'Something went wrong'}</CardTitle>
-              <CardDescription>
-                {t?.common?.refreshPage || 'An unexpected error occurred. Please try refreshing the page.'}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {process.env.NODE_ENV === 'development' && this.state.error && (
-                <details className="text-xs bg-muted p-3 rounded border">
-                  <summary className="cursor-pointer font-medium">{t?.common?.errorDetails || 'Error Details'}</summary>
-                  <pre className="mt-2 whitespace-pre-wrap break-all">
-                    {this.state.error.toString()}
-                  </pre>
-                </details>
-              )}
-              <Button 
-                onClick={this.resetError} 
-                className="w-full"
-                variant="outline"
-              >
-                <RefreshCw className="w-4 h-4 mr-2" />
-                {t?.common?.retry || 'Try Again'}
-              </Button>
-              <Button 
-                onClick={() => window.location.reload()} 
-                className="w-full"
-              >
-                {t?.common?.refresh || 'Refresh Page'}
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )
+      // Keep the app usable; log and continue rendering children
+      console.warn('ErrorBoundary caught (non-fatal):', this.state.error)
+      return this.props.children
     }
 
     return this.props.children

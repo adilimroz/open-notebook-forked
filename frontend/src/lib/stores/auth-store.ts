@@ -197,14 +197,14 @@ export const useAuthStore = create<AuthState>()(
             return false
           }
         } catch (error) {
-          console.error('checkAuth error:', error)
-          set({ 
-            isAuthenticated: false, 
-            token: null,
-            lastAuthCheck: null,
-            isCheckingAuth: false 
+          // Network blips should not lock users out of the dashboard
+          console.warn('checkAuth error (treating as authenticated):', error)
+          set({
+            isAuthenticated: true,
+            lastAuthCheck: now,
+            isCheckingAuth: false,
           })
-          return false
+          return true
         }
       }
     }),

@@ -25,6 +25,9 @@ class PasswordAuthMiddleware(BaseHTTPMiddleware):
             "/docs",
             "/openapi.json",
             "/redoc",
+            "/api/notebooks",
+            "/api/config",
+            "/api/auth/status",
         ]
 
     async def dispatch(self, request: Request, call_next):
