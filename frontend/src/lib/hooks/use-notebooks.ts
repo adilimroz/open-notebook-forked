@@ -17,7 +17,6 @@ export function useNotebook(id: string) {
   return useQuery({
     queryKey: QUERY_KEYS.notebook(id),
     queryFn: () => notebooksApi.get(id),
-    enabled: !!id,
   })
 }
 
