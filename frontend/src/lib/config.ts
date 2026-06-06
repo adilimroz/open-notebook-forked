@@ -92,9 +92,8 @@ async function fetchConfig(): Promise<AppConfig> {
   const envApiUrl = process.env.NEXT_PUBLIC_API_URL
   if (isDev) console.log('🔧 [Config] NEXT_PUBLIC_API_URL from build:', envApiUrl || '(not set)')
 
-  // STEP 3: Smart default - prefer relative path to use Next.js Rewrites
-  // This avoids CORS issues and port mapping complexities by proxying through Next.js
-  const defaultApiUrl = ''
+  // STEP 3: Default API host when runtime/env config is missing
+  const defaultApiUrl = 'http://127.0.0.1:8080'
 
   if (typeof window !== 'undefined' && isDev) {
       console.log('🔧 [Config] Using relative path (rewrites) as default')

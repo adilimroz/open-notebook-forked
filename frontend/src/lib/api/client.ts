@@ -26,13 +26,10 @@ apiClient.interceptors.request.use(async (config) => {
   if (typeof window !== 'undefined') {
     const authStorage = localStorage.getItem('auth-storage')
     if (authStorage) {
-      try {
-        const { state } = JSON.parse(authStorage)
-        if (state?.token) {
-          config.headers.Authorization = `Bearer ${state.token}`
-        }
-      } catch (error) {
-        console.error('Error parsing auth storage:', error)
+      const { state } = JSON.parse(authStorage)
+      if (state?.token) {
+        config.headers.Authorization = `Bearer ${state.token}`
+        console.log('[api] request auth token:', state.token)
       }
     }
   }
@@ -48,19 +45,10 @@ apiClient.interceptors.request.use(async (config) => {
   return config
 })
 
-// Response interceptor for error handling
+// Response interceptor — pass errors through; callers handle 401
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      // Clear auth and redirect to login
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('auth-storage')
-        window.location.href = '/login'
-      }
-    }
-    return Promise.reject(error)
-  }
+  (error) => Promise.reject(error)
 )
 
 export default apiClient
